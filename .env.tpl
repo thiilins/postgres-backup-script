@@ -4,3 +4,5 @@ DB_NAME=seu_banco
 DB_PASSWORD=sua_senha
 DB_PORT=5432
 DB_SCHEMA=public
+# Support en/es/pt
+LANGUAGE=en
