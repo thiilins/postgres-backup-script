@@ -4,8 +4,8 @@ yarn.lock
 package-lock.json
 
 # Ignora tudo dentro da pasta
-/actions/backups/*
+/backups/*
 
 # Mas garante que a pasta em si seja criada no repositório
-!/actions/backups/.gitkeep
+!/backups/.gitkeep
 
