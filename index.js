@@ -1,19 +1,12 @@
-import { exportProcedures } from "./procedures/index.js";
-import { exportViews } from "./views/index.js";
-
+const { exportProcedures } = require("./actions/procedures");
+const { exportViews } = require("./actions/views");
+const { exportMaterializedViews } = require("./actions/materialized-views");
+const { resetAllBackups } = require("./actions/folder-management");
 const main = async () => {
-  console.log("--------------------------------");
-  console.log("Iniciando backup...");
-  console.log("--------------------------------");
-  console.log("Iniciando backup de procedures...");
+  await resetAllBackups();
   await exportProcedures();
-  console.log("Backup de procedures concluído!");
-  console.log("--------------------------------");
-  console.log("Iniciando backup de views...");
   await exportViews();
-  console.log("Backup de views concluído!");
-  console.log("--------------------------------");
-  console.log("Backup concluído com sucesso!");
+  await exportMaterializedViews();
 };
 
 main();
