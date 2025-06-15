@@ -1,0 +1,5 @@
+# Ignora tudo dentro da pasta
+/backup_procedures/*
+
+# Mas garante que a pasta em si seja criada no repositório
+!/backup_procedures/.gitkeep
