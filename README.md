@@ -1,6 +1,10 @@
 # 📦 Backup de Procedures e Views do PostgreSQL
 
-[English](README.en.md) | [Español](README.es.md)
+🌐 **Escolha o idioma / Select language / Elige el idioma:**
+
+- 🇧🇷 [Português](README.pt.md)
+- 🇺🇸 [English](README.en.md)
+- 🇪🇸 [Español](README.es.md)
 
 Este projeto é uma ferramenta automatizada para realizar backup de procedures, views e views
 materializadas de bancos de dados PostgreSQL. Foi desenvolvido para auxiliar na documentação e
