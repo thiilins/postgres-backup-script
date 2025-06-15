@@ -1,40 +1,38 @@
 // scripts/exportViews.js
 
-const fs = require("fs");
-const path = require("path");
-const { Client } = require("pg");
-const { getAllSchemas } = require("./schema-management");
-const { viewsBackupDir } = require("./constants");
-const { dbConfig } = require("./db-config");
-const { log } = require("./logger");
+const fs = require('fs');
+const path = require('path');
+const { Client } = require('pg');
+const { getAllSchemas } = require('./schema-management');
+const { viewsBackupDir } = require('./constants');
+const { dbConfig } = require('./db-config');
+const { log, getTranslation } = require('./logger');
 const backupDir = viewsBackupDir;
 
 async function exportViews() {
-  log("Iniciando backup de views...");
+  log(getTranslation('starting_backup'));
 
   const client = new Client(dbConfig);
   try {
     await client.connect();
-    log(`✅ Conectado ao banco: ${dbConfig.database}`);
+    log(`✅ ${getTranslation('connected_to_db')} ${dbConfig.database}`);
 
-    const schemas = dbConfig.schema
-      ? [dbConfig.schema]
-      : await getAllSchemas(client);
+    const schemas = dbConfig.schema ? [dbConfig.schema] : await getAllSchemas(client);
 
     for (const schema of schemas) {
       await exportSchemaViews(client, schema);
     }
 
-    log("✅ Backup de views concluído com sucesso!");
+    log(`✅ ${getTranslation('backup_completed')}`);
   } catch (error) {
-    log("❌ Erro ao exportar views: " + error.message);
+    log(`❌ ${getTranslation('error_exporting')} ${error.message}`);
   } finally {
     await client.end();
   }
 }
 
 async function exportSchemaViews(client, schemaName) {
-  log(`📦 Exportando views do schema: ${schemaName}`);
+  log(`📦 ${getTranslation('exporting_schema')} ${schemaName}`);
 
   const query = `
     SELECT c.relname AS view_name,
@@ -47,7 +45,7 @@ async function exportSchemaViews(client, schemaName) {
   const res = await client.query(query, [schemaName]);
 
   if (res.rows.length === 0) {
-    log(`⚠️ Nenhuma view encontrada no schema: ${schemaName}`);
+    log(`⚠️ ${getTranslation('no_views_found')} ${schemaName}`);
     return;
   }
 
@@ -59,7 +57,7 @@ async function exportSchemaViews(client, schemaName) {
     const filePath = path.join(outputDir, `${row.view_name}.sql`);
     const createStmt = `CREATE OR REPLACE VIEW ${schemaName}.${row.view_name} AS \n${row.definition};`;
     fs.writeFileSync(filePath, createStmt);
-    log(`📄 View salva: ${schemaName}.${row.view_name}`);
+    log(`📄 ${getTranslation('view_saved')} ${schemaName}.${row.view_name}`);
   }
 }
 

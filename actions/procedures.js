@@ -1,28 +1,27 @@
 // scripts/exportProcedures.js
-const fs = require("fs");
-const path = require("path");
-const { Client } = require("pg");
-const { getAllSchemas } = require("./schema-management");
-const { proceduresBackupDir } = require("./constants");
-const { dbConfig } = require("./db-config");
-const { log } = require("./logger");
+const fs = require('fs');
+const path = require('path');
+const { Client } = require('pg');
+const { getAllSchemas } = require('./schema-management');
+const { proceduresBackupDir } = require('./constants');
+const { dbConfig } = require('./db-config');
+const { log, getTranslation } = require('./logger');
 const backupDir = proceduresBackupDir;
 // Função principal
 async function exportProcedures() {
-  log("Iniciando backup de procedures...");
+  log(getTranslation('starting_backup'));
   const client = new Client(dbConfig);
   try {
     await client.connect();
-    log(`✅ Conectado ao banco de dados: ${dbConfig.database}`);
-    const schemas =
-      dbConfig.schema != null ? [dbConfig.schema] : await getAllSchemas(client);
-    console.log("Schemas: ", schemas);
+    log(`✅ ${getTranslation('connected_to_db')} ${dbConfig.database}`);
+    const schemas = dbConfig.schema != null ? [dbConfig.schema] : await getAllSchemas(client);
+    console.log('Schemas: ', schemas);
     for (const schema of schemas) {
       await exportSchemaProcedures(client, schema);
     }
-    log("✅ Backup concluído com sucesso!");
+    log(`✅ ${getTranslation('backup_completed')}`);
   } catch (error) {
-    log("❌ Erro geral ao exportar procedures: " + error.message);
+    log(`❌ ${getTranslation('error_exporting')} ${error.message}`);
   } finally {
     await client.end();
   }
@@ -30,7 +29,7 @@ async function exportProcedures() {
 
 // Exportar procedures de um schema específico
 async function exportSchemaProcedures(client, schemaName) {
-  log(`📦 Exportando procedures do schema: ${schemaName}...`);
+  log(`📦 ${getTranslation('exporting_schema')} ${schemaName}...`);
 
   const query = `
     SELECT p.proname AS procedure_name,
@@ -42,7 +41,7 @@ async function exportSchemaProcedures(client, schemaName) {
   const res = await client.query(query, [schemaName]);
 
   if (res.rows.length === 0) {
-    log(`⚠️ Nenhuma procedure encontrada no schema: ${schemaName}`);
+    log(`⚠️ ${getTranslation('no_procedures_found')} ${schemaName}`);
     return;
   }
 
@@ -53,7 +52,7 @@ async function exportSchemaProcedures(client, schemaName) {
     const fileName = `${row.procedure_name}.sql`;
     const filePath = path.join(outputDir, fileName);
     fs.writeFileSync(filePath, row.definition);
-    log(`📄 Procedure salva: ${schemaName}.${row.procedure_name}`);
+    log(`📄 ${getTranslation('procedure_saved')} ${schemaName}.${row.procedure_name}`);
   }
 }
 

@@ -1,6 +1,11 @@
-const fs = require("fs");
-const path = require("path");
-const { backupDir } = require("./constants");
+const fs = require('fs');
+const path = require('path');
+const { backupDir } = require('./constants');
+const { getTranslation } = require('../translations');
+const dotenv = require('dotenv');
+
+dotenv.config();
+
 const resetLog = () => {
   const fileName = `export.log`;
   const logPath = path.join(backupDir, fileName);
@@ -8,10 +13,10 @@ const resetLog = () => {
   try {
     if (fs.existsSync(logPath)) {
       fs.unlinkSync(logPath);
-      console.log("🧹 Log anterior apagado:", logPath);
+      console.log('🧹', getTranslation('previous_log_cleared'), logPath);
     }
   } catch (err) {
-    console.error("❌ Erro ao tentar limpar o log:", err.message);
+    console.error('❌', getTranslation('error_clearing_log'), err.message);
   }
 
   return logPath;
@@ -22,6 +27,7 @@ const getLogPath = () => {
   const fileName = `export.log`;
   return path.join(backupDir, fileName);
 };
+
 const logSection = (title) => {
   const sectionHeader = `
   
@@ -32,20 +38,22 @@ const logSection = (title) => {
 
   log(sectionHeader.trim());
 };
+
 const logFile = () => {
   const logPath = getLogPath();
-  if (!fs.existsSync(logPath)) fs.writeFileSync(logPath, "");
+  if (!fs.existsSync(logPath)) fs.writeFileSync(logPath, '');
   return logPath;
 };
 
 // Grava mensagem no console e no log
 const log = (message) => {
   console.log(message);
-  fs.appendFileSync(logFile(), message + "\n");
+  fs.appendFileSync(logFile(), message + '\n');
 };
 
 module.exports = {
   log,
   resetLog,
   logSection,
+  getTranslation,
 };
