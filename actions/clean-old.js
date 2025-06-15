@@ -5,11 +5,10 @@ const {
   materializedViewsBackupDir,
   proceduresBackupDir,
 } = require("./constants");
+const { resetLog } = require("./logger");
 
 const cleanOldBackups = () => {
   // Apaga a pasta de backup de views
-  if (fs.existsSync(viewsBackupDir))
-    fs.rmSync(viewsBackupDir, { recursive: true });
 
   // Apaga a pasta de backup de views materializadas
   if (fs.existsSync(materializedViewsBackupDir))
@@ -22,10 +21,8 @@ const cleanOldBackups = () => {
 
 const createBackupDir = () => {
   // Cria a pasta de backup principal
-  if (!fs.existsSync(backupDir)) fs.mkdirSync(backupDir, { recursive: true });
+
   // Cria a pasta de backup de views
-  if (!fs.existsSync(viewsBackupDir))
-    fs.mkdirSync(viewsBackupDir, { recursive: true });
 
   // Cria a pasta de backup de views materializadas
   if (!fs.existsSync(materializedViewsBackupDir))
@@ -37,12 +34,11 @@ const createBackupDir = () => {
 };
 
 const resetAllBackups = () => {
-  cleanOldBackups();
-  createBackupDir();
+  if (fs.existsSync(backupDir)) fs.rmSync(backupDir, { recursive: true });
+  fs.mkdirSync(backupDir, { recursive: true });
+  resetLog();
 };
 
 module.exports = {
-  cleanOldBackups,
-  createBackupDir,
   resetAllBackups,
 };

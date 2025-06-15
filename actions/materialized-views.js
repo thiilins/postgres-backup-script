@@ -6,20 +6,8 @@ const { Client } = require("pg");
 const { getAllSchemas } = require("./schema-management");
 const { materializedViewsBackupDir } = require("./constants");
 const { dbConfig } = require("./db-config");
-
+const { log } = require("./logger");
 const backupDir = materializedViewsBackupDir;
-
-function getLogPath() {
-  if (!fs.existsSync(backupDir)) fs.mkdirSync(backupDir, { recursive: true });
-  return path.join(backupDir, `export.log`);
-}
-
-const logFile = getLogPath();
-
-function log(message) {
-  console.log(message);
-  fs.appendFileSync(logFile, message + "\n");
-}
 
 async function exportMaterializedViews() {
   log("Iniciando backup de views materializadas...");
@@ -78,5 +66,3 @@ async function exportSchemaMaterializedViews(client, schemaName) {
 module.exports = {
   exportMaterializedViews,
 };
-
-exportMaterializedViews();

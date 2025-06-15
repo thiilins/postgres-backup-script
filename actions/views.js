@@ -6,19 +6,8 @@ const { Client } = require("pg");
 const { getAllSchemas } = require("./schema-management");
 const { viewsBackupDir } = require("./constants");
 const { dbConfig } = require("./db-config");
+const { log } = require("./logger");
 const backupDir = viewsBackupDir;
-
-function getLogPath() {
-  if (!fs.existsSync(backupDir)) fs.mkdirSync(backupDir, { recursive: true });
-  return path.join(backupDir, `export.log`);
-}
-
-const logFile = getLogPath();
-
-function log(message) {
-  console.log(message);
-  fs.appendFileSync(logFile, message + "\n");
-}
 
 async function exportViews() {
   log("Iniciando backup de views...");
@@ -77,5 +66,3 @@ async function exportSchemaViews(client, schemaName) {
 module.exports = {
   exportViews,
 };
-
-exportViews();

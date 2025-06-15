@@ -5,27 +5,8 @@ const { Client } = require("pg");
 const { getAllSchemas } = require("./schema-management");
 const { proceduresBackupDir } = require("./constants");
 const { dbConfig } = require("./db-config");
+const { log } = require("./logger");
 const backupDir = proceduresBackupDir;
-
-// Gera caminho do log
-function getLogPath() {
-  if (!fs.existsSync(backupDir)) fs.mkdirSync(backupDir, { recursive: true });
-  const fileName = `export.log`;
-  return path.join(backupDir, fileName);
-}
-
-const logFile = () => {
-  const logPath = getLogPath();
-  if (!fs.existsSync(logPath)) fs.writeFileSync(logPath, "");
-  return logPath;
-};
-
-// Grava mensagem no console e no log
-function log(message) {
-  console.log(message);
-  fs.appendFileSync(logFile(), message + "\n");
-}
-
 // Função principal
 async function exportProcedures() {
   log("Iniciando backup de procedures...");
@@ -79,5 +60,3 @@ async function exportSchemaProcedures(client, schemaName) {
 module.exports = {
   exportProcedures,
 };
-
-exportProcedures();
