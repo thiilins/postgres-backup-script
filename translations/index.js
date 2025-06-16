@@ -49,7 +49,7 @@ const translations = {
     sync_procedure_applied: 'Procedure applied in PRD:',
     sync_procedure_exported: 'HML export completed.',
     sync_procedure_dropped: 'Procedures removed from production database.',
-    help: 'Usage: node index.js [options]\n\nOptions:\n--all       Run all tasks\n--reset     Reset all backups\n--sync      Sync procedures from HML to PRD\n--help      Show this help message',
+    help: 'Usage: node index.js [options]\n\nOptions:\n--backup       Run complete backup\n--reset     Reset all backups\n--sync      Sync procedures from HML to PRD\n--help      Show this help message\n--apply     Apply procedures to database',
   },
   pt: {
     starting_backup: 'Iniciando backup...',
@@ -88,7 +88,7 @@ const translations = {
     sync_procedure_applied: 'Procedure aplicada em PRD:',
     sync_procedure_exported: 'Exportação do HML finalizada.',
     sync_procedure_dropped: 'Procedures removidas do banco de produção.',
-    help: 'Uso: node index.js [opções]\n\nOpções:\n--all       Executar todas as tarefas\n--reset     Resetar todos os backups\n--sync      Sincronizar procedures do HML para PRD\n--help      Mostrar esta ajuda',
+    help: 'Uso: node index.js [opções]\n\nOpções:\n--backup       Executar backup completo\n--reset     Resetar todos os backups\n--sync      Sincronizar procedures do HML para PRD\n--help      Mostrar esta ajuda\n--apply     Aplicar procedures a base de dados',
   },
   es: {
     starting_backup: 'Iniciando respaldo...',
@@ -127,7 +127,7 @@ const translations = {
     sync_procedure_applied: 'Procedure aplicada en PRD:',
     sync_procedure_exported: 'Exportación del HML finalizada.',
     sync_procedure_dropped: 'Procedures removidas del banco de producción.',
-    help: 'Uso: node index.js [opciones]\n\nOpciones:\n--all       Ejecutar todas las tareas\n--reset     Reiniciar todos los backups\n--sync      Sincronizar procedures del HML para PRD\n--help      Mostrar esta ayuda',
+    help: 'Uso: node index.js [opciones]\n\nOpciones:\n--backup       Ejecutar backup completo\n--reset     Reiniciar todos los backups\n--sync      Sincronizar procedures del HML para PRD\n--help      Mostrar esta ayuda\n--apply     Aplicar procedures a la base de datos',
   },
 };
 

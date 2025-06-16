@@ -9,26 +9,25 @@ const BACKUP_DIR = path.join(__dirname, '../backups');
 
 async function dropAllProcedures(client) {
   const query = `
-    DO $$
-    DECLARE
-      r RECORD;
-    BEGIN
-      FOR r IN
-        SELECT n.nspname, p.proname, pg_get_function_identity_arguments(p.oid) as args
-        FROM pg_proc p
-        JOIN pg_namespace n ON p.pronamespace = n.oid
-        WHERE n.nspname NOT IN ('pg_catalog', 'information_schema')
-          AND p.prokind IN ('f', 'p')
-      LOOP
-        EXECUTE format('DROP %s %I.%I(%s);',
-                       CASE WHEN p.prokind = 'p' THEN 'PROCEDURE' ELSE 'FUNCTION' END,
-                       r.nspname,
-                       r.proname,
-                       r.args);
-      END LOOP;
-    END
-    $$;
-  `;
+  DO $$
+  DECLARE
+    r RECORD;
+  BEGIN
+    FOR r IN
+      SELECT n.nspname, p.proname, pg_get_function_identity_arguments(p.oid) AS args
+      FROM pg_proc p
+      JOIN pg_namespace n ON p.pronamespace = n.oid
+      WHERE p.prokind = 'p'  -- Apenas PROCEDURE
+        AND n.nspname NOT IN ('pg_catalog', 'information_schema')
+    LOOP
+      EXECUTE format('DROP PROCEDURE %I.%I(%s);',
+                     r.nspname,
+                     r.proname,
+                     r.args);
+    END LOOP;
+  END
+  $$;
+`;
 
   await client.query(query);
   log(`🧹 ${getTranslation('reset_procedure_dropped')}`);
@@ -43,7 +42,7 @@ async function applyProceduresFromBackup(client, schemaPath) {
   }
 }
 
-(async () => {
+const resetProcedure = async () => {
   const client = new Client(dbConfig);
   try {
     await client.connect();
@@ -65,4 +64,7 @@ async function applyProceduresFromBackup(client, schemaPath) {
   } finally {
     await client.end();
   }
-})();
+};
+module.exports = {
+  resetProcedure,
+};

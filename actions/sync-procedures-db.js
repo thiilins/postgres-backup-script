@@ -37,14 +37,13 @@ async function dropAllProcedures(client) {
       r RECORD;
     BEGIN
       FOR r IN
-        SELECT n.nspname, p.proname, pg_get_function_identity_arguments(p.oid) as args, p.prokind
+        SELECT n.nspname, p.proname, pg_get_function_identity_arguments(p.oid) AS args
         FROM pg_proc p
         JOIN pg_namespace n ON p.pronamespace = n.oid
-        WHERE n.nspname NOT IN ('pg_catalog', 'information_schema')
-          AND p.prokind IN ('f', 'p')
+        WHERE p.prokind = 'p'  -- Apenas PROCEDURE
+          AND n.nspname NOT IN ('pg_catalog', 'information_schema')
       LOOP
-        EXECUTE format('DROP %s %I.%I(%s);',
-                       CASE WHEN r.prokind = 'p' THEN 'PROCEDURE' ELSE 'FUNCTION' END,
+        EXECUTE format('DROP PROCEDURE %I.%I(%s);',
                        r.nspname,
                        r.proname,
                        r.args);

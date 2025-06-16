@@ -8,18 +8,23 @@ const { resetAllBackups } = require('./actions/clean-old');
 const { getTranslation } = require('./translations');
 const { syncProcedures } = require('./actions/sync-procedures-db');
 const { help } = require('./actions/help');
-
+const { resetProcedure } = require('./actions/reset-procedure');
+const { applySelectedProcedures } = require('./actions/apply-procedures');
 const args = process.argv.slice(2); // remove node + script
-const runAll = args.length === 0 || args.includes('--all');
+const runAll = args.length === 0 || args.includes('--backup');
 const runSync = args.includes('--sync');
 const runReset = args.includes('--reset');
+const runApply = args.includes('--apply');
 
 const main = async () => {
   if (args.includes('--help')) {
     help();
     return;
   }
-
+  if (runApply) {
+    applySelectedProcedures();
+    return;
+  }
   if (runAll) {
     resetAllBackups();
 
@@ -33,13 +38,12 @@ const main = async () => {
     await exportMaterializedViews();
     logSection(getTranslation('sql_format_start'));
     await formatSql();
-
     logSection(getTranslation('finished'));
   }
 
   if (runReset) {
     logSection(getTranslation('reset_start'));
-    resetAllBackups();
+    resetProcedure();
     logSection(getTranslation('reset_finished'));
   }
 

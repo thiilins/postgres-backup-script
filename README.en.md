@@ -60,7 +60,7 @@ yarn start
 
 # Available options:
 --help    # Shows help
---all     # Runs complete backup (default)
+--backup     # Runs complete backup (default)
 --sync    # Syncs procedures between environments
 --reset   # Cleans old backups
 ```

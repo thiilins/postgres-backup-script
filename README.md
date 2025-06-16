@@ -19,10 +19,25 @@ versionamento de objetos de banco, organizando os arquivos por data e schema.
     - [Formatar (Prettier)](#formatar-prettier)
   - [🌍 Suporte a Múltiplos Idiomas](#-suporte-a-múltiplos-idiomas)
   - [🚀 Funcionalidades](#-funcionalidades)
+    - [Backup Automático](#backup-automático)
+    - [Formatação e Qualidade](#formatação-e-qualidade)
+    - [Gerenciamento de Ambientes](#gerenciamento-de-ambientes)
+    - [Logs e Monitoramento](#logs-e-monitoramento)
+    - [Internacionalização](#internacionalização)
+    - [Segurança](#segurança)
   - [🛠️ Tecnologias Utilizadas](#️-tecnologias-utilizadas)
   - [📋 Requisitos](#-requisitos)
   - [🔧 Instalação](#-instalação)
   - [🚀 Como Usar](#-como-usar)
+    - [Instalação](#instalação)
+    - [Comandos Disponíveis](#comandos-disponíveis)
+      - [Backup Completo](#backup-completo)
+      - [Sincronização entre Ambientes](#sincronização-entre-ambientes)
+      - [Limpeza de Backups](#limpeza-de-backups)
+      - [Ajuda](#ajuda)
+    - [Estrutura de Backups](#estrutura-de-backups)
+    - [Logs e Monitoramento](#logs-e-monitoramento-1)
+    - [Dicas de Uso](#dicas-de-uso)
   - [📁 Estrutura de Arquivos](#-estrutura-de-arquivos)
   - [📝 Logs](#-logs)
   - [🧐 Detalhes Técnicos](#-detalhes-técnicos)
@@ -45,7 +60,7 @@ pnpm start
 
 # Opções disponíveis:
 --help    # Mostra a ajuda
---all     # Executa backup completo (padrão)
+--backup     # Executa backup completo (padrão)
 --sync    # Sincroniza procedures entre ambientes
 --reset   # Limpa backups antigos
 ```

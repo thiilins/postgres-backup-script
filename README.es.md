@@ -45,7 +45,7 @@ yarn start
 
 # Opciones disponibles:
 --help    # Muestra la ayuda
---all     # Ejecuta respaldo completo (predeterminado)
+--backup     # Ejecuta respaldo completo (predeterminado)
 --sync    # Sincroniza procedimientos entre ambientes
 --reset   # Limpia respaldos antiguos
 ```
