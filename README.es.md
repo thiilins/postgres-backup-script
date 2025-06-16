@@ -42,6 +42,12 @@ npm start
 pnpm start
 # o
 yarn start
+
+# Opciones disponibles:
+--help    # Muestra la ayuda
+--all     # Ejecuta respaldo completo (predeterminado)
+--sync    # Sincroniza procedimientos entre ambientes
+--reset   # Limpia respaldos antiguos
 ```
 
 ### Formatear (Prettier)
@@ -80,13 +86,45 @@ Si no se especifica ningún idioma, se utilizará Inglés por defecto.
 
 ## 🚀 Características
 
-- Respaldo automático de procedimientos
-- Respaldo automático de vistas
-- Respaldo automático de vistas materializadas
-- Formateo automático de SQL
-- Organización del respaldo por fecha y esquema
-- Registro detallado del proceso
-- Soporte para múltiples esquemas de PostgreSQL
+### Respaldo Automático
+
+- **Procedimientos**: Exporta todos los procedimientos de la base de datos, manteniendo la
+  estructura y formato original
+- **Vistas**: Realiza respaldo de todas las vistas, incluyendo sus definiciones y dependencias
+- **Vistas Materializadas**: Exporta vistas materializadas con sus configuraciones de actualización
+- **Organización Inteligente**: Estructura los respaldos por fecha y esquema para fácil localización
+- **Nomenclatura Avanzada**: Nombres de archivos basados en tipos de argumentos para garantizar
+  unicidad
+
+### Formateo y Calidad
+
+- **Formateo SQL**: Aplica formateo consistente a todos los archivos SQL
+- **Validación de Sintaxis**: Verifica la sintaxis SQL durante el proceso de respaldo
+- **Preservación de Comentarios**: Mantiene comentarios y documentación original
+
+### Gestión de Ambientes
+
+- **Sincronización**: Permite sincronizar procedimientos entre ambientes (ej: HML a PRD)
+- **Reset Seguro**: Opción para limpiar respaldos antiguos manteniendo la organización
+- **Multi-esquema**: Soporte para respaldo de múltiples esquemas simultáneamente
+
+### Registros y Monitoreo
+
+- **Registros Detallados**: Registra todas las operaciones con marcas de tiempo
+- **Manejo de Errores**: Sistema robusto de manejo y reporte de errores
+- **Estado en Tiempo Real**: Retroalimentación visual del progreso de las operaciones
+
+### Internacionalización
+
+- **Múltiples Idiomas**: Soporte completo para Español, Portugués e Inglés
+- **Interfaz Adaptativa**: Mensajes y registros en el idioma configurado
+- **Documentación Multilingüe**: READMEs disponibles en tres idiomas
+
+### Seguridad
+
+- **Credenciales Seguras**: Uso de variables de entorno para datos sensibles
+- **Validación de Conexión**: Verificación de permisos antes de las operaciones
+- **Respaldo Seguro**: Preserva permisos y propiedad de los objetos
 
 ## 🛠️ Tecnologías Utilizadas
 
@@ -109,6 +147,7 @@ Si no se especifica ningún idioma, se utilizará Inglés por defecto.
 
 ```bash
 git clone [REPOSITORY_URL]
+cd procedure-backups-script
 ```
 
 2. Instalar dependencias:
@@ -125,32 +164,134 @@ pnpm install
    siguientes variables:
 
 ```env
+# Configuración de Base de Datos
 DB_HOST=tu_host
 DB_PORT=tu_puerto
 DB_USER=tu_usuario
 DB_PASSWORD=tu_contraseña
 DB_NAME=tu_base_de_datos
-DB_SCHEMA=tu_esquema  # Opcional – si se omite, se exportan todos los esquemas excepto los del sistema
+DB_SCHEMA=tu_esquema  # Opcional – si se omite, exporta todos los esquemas no-sistema
+
+# Configuración del Ambiente
+LANGUAGE=es  # es, pt, en
 ```
 
 ## 🚀 Cómo Usar
 
-Para ejecutar el respaldo, simplemente ejecute:
+### Instalación
+
+1. Clone el repositorio:
 
 ```bash
-node index.js
-# O utilice el script:
-npm start
+git clone [REPOSITORY_URL]
+cd procedure-backups-script
 ```
 
-El script realizará:
+2. Instale las dependencias:
 
-1. Crear una nueva carpeta de respaldo con la fecha actual
-2. Exportar todos los procedimientos
-3. Exportar todas las vistas
-4. Exportar todas las vistas materializadas
-5. Formatear todos los archivos SQL generados
-6. Guardar los archivos en la estructura organizada
+```bash
+yarn install
+# o
+npm install
+# o
+pnpm install
+```
+
+3. Configure el archivo `.env` en la raíz del proyecto:
+
+```env
+# Configuración de Base de Datos
+DB_HOST=tu_host
+DB_PORT=tu_puerto
+DB_USER=tu_usuario
+DB_PASSWORD=tu_contraseña
+DB_NAME=tu_base_de_datos
+DB_SCHEMA=tu_esquema  # Opcional – si se omite, exporta todos los esquemas no-sistema
+
+# Configuración del Ambiente
+LANGUAGE=es  # es, pt, en
+```
+
+### Comandos Disponibles
+
+#### Respaldo Completo
+
+```bash
+# Ejecuta respaldo de procedimientos, vistas y vistas materializadas
+npm start
+# o
+yarn start
+# o
+pnpm start
+```
+
+#### Sincronización entre Ambientes
+
+```bash
+# Sincroniza procedimientos del ambiente HML a PRD
+npm start -- --sync
+# o
+yarn start --sync
+# o
+pnpm start --sync
+```
+
+#### Limpieza de Respaldos
+
+```bash
+# Elimina respaldos antiguos manteniendo la organización
+npm start -- --reset
+# o
+yarn start --reset
+# o
+pnpm start --reset
+```
+
+#### Ayuda
+
+```bash
+# Muestra todas las opciones disponibles
+npm start -- --help
+# o
+yarn start --help
+# o
+pnpm start --help
+```
+
+### Estructura de Respaldos
+
+Después de la ejecución, los archivos se organizarán de la siguiente manera:
+
+```
+backups/
+└── nombre_base_datos/
+    └── YYYY-MM-DD/
+        ├── procedures/
+        │   └── nombre_esquema/
+        │       └── nombre_procedimiento_tipo_arg.sql
+        ├── views/
+        │   └── nombre_esquema/
+        │       └── nombre_vista.sql
+        ├── materialized-views/
+        │   └── nombre_esquema/
+        │       └── nombre_vista_materializada.sql
+        └── export.log
+```
+
+### Registros y Monitoreo
+
+- Los registros se guardan en `backups/[nombre_base_datos]/[fecha]/export.log`
+- Cada operación se registra con marca de tiempo
+- Los errores se destacan con ❌
+- Las operaciones exitosas se marcan con ✅
+
+### Consejos de Uso
+
+1. **Respaldo Regular**: Ejecute el respaldo diariamente para mantener un historial actualizado
+2. **Esquemas Específicos**: Use `DB_SCHEMA` para exportar solo esquemas específicos
+3. **Idioma**: Configure `LANGUAGE` para recibir mensajes en su idioma preferido
+4. **Sincronización**: Use `--sync` para mantener diferentes ambientes sincronizados
+5. **Limpieza**: Ejecute `--reset` periódicamente para evitar acumulación de respaldos antiguos
 
 ## 📁 Estructura de Archivos
 
@@ -192,6 +333,8 @@ Los registros se guardan en `backups/[nombre_base_datos]/[fecha]/export.log`
   versionado
 - **Conexión**: Utiliza el cliente `pg` para la conexión a la base de datos
 - **Manejo de Errores**: Implementa manejo de errores robusto en todas las operaciones
+- **Nombres de Procedimientos**: Los archivos de procedimientos se nombran usando el nombre del
+  procedimiento y los tipos de argumentos para garantizar unicidad
 
 ## 🤝 Contribuir
 
