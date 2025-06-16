@@ -7,6 +7,7 @@ const { proceduresBackupDir } = require('./constants');
 const { dbConfig } = require('./db-config');
 const { log, getTranslation } = require('./logger');
 const backupDir = proceduresBackupDir;
+
 // Função principal
 async function exportProcedures() {
   log(getTranslation('starting_backup'));
@@ -32,12 +33,16 @@ async function exportSchemaProcedures(client, schemaName) {
   log(`📦 ${getTranslation('exporting_schema')} ${schemaName}...`);
 
   const query = `
-    SELECT p.proname AS procedure_name,
-           pg_get_functiondef(p.oid) AS definition
+    SELECT 
+      p.oid,
+      p.proname AS procedure_name,
+      pg_get_function_identity_arguments(p.oid) AS args_signature,
+      pg_get_functiondef(p.oid) AS definition
     FROM pg_proc p
     JOIN pg_namespace n ON p.pronamespace = n.oid
     WHERE n.nspname = $1;
   `;
+
   const res = await client.query(query, [schemaName]);
 
   if (res.rows.length === 0) {
@@ -49,10 +54,13 @@ async function exportSchemaProcedures(client, schemaName) {
   if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
 
   for (const row of res.rows) {
-    const fileName = `${row.procedure_name}.sql`;
+    const safeArgs = row.args_signature.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
+    const fileName = `${row.procedure_name}_${safeArgs}.sql`;
     const filePath = path.join(outputDir, fileName);
     fs.writeFileSync(filePath, row.definition);
-    log(`📄 ${getTranslation('procedure_saved')} ${schemaName}.${row.procedure_name}`);
+    log(
+      `📄 ${getTranslation('procedure_saved')} ${schemaName}.${row.procedure_name}(${row.args_signature})`,
+    );
   }
 }
 
